@@ -46,12 +46,12 @@ public class APIsUsersController
         String requestURL = "https://api.github.com/users/" + user;
 
         System.out.println(requestURL);
-        ParameterizedTypeReference<Map<String, GithubUser>> responseType = new ParameterizedTypeReference<>()
+        ParameterizedTypeReference<GithubUser> responseType = new ParameterizedTypeReference<>()
         {
         };
-        ResponseEntity<Map<String, GithubUser>> responseEntity = restTemplate.exchange(requestURL, HttpMethod.GET, null, responseType);
+        ResponseEntity<GithubUser> responseEntity = restTemplate.exchange(requestURL, HttpMethod.GET, null, responseType);
 
-        Map<String, GithubUser> userdata = responseEntity.getBody();
+        GithubUser userdata = responseEntity.getBody();
 
 //        System.out.println(userdata);
         return new ResponseEntity<>(userdata, HttpStatus.OK);

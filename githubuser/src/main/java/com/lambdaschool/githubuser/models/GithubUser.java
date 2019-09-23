@@ -1,7 +1,10 @@
 package com.lambdaschool.githubuser.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name = "githubuser")
 public class GithubUser {
@@ -35,6 +38,8 @@ public class GithubUser {
     public void setLogin(String login) {
         this.login = login;
     }
+
+}
 //
 //    public String getEmail() {
 //        return email;
@@ -67,4 +72,4 @@ public class GithubUser {
 //    public void setCreated_at(String created_at) {
 //        this.created_at = created_at;
 //    }
-}
+
