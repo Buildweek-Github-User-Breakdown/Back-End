@@ -1,6 +1,7 @@
 package com.lambdaschool.githubuser.controllers;
 
 import com.lambdaschool.githubuser.models.APIOpenLibrary;
+import com.lambdaschool.githubuser.models.GithubUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
@@ -12,13 +13,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
-
+import java.util.LinkedHashMap;
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/otherapis")
-public class APIsController
+//@RequestMapping("/users")
+public class APIsUsersController
 {
     private static final Logger logger = LoggerFactory.getLogger(RolesController.class);
     private RestTemplate restTemplate = new RestTemplate();
@@ -29,27 +31,29 @@ public class APIsController
     //
     // localhost:2019/otherapis/openlibrary/0982477562
 
-    @GetMapping(value = "/openlibrary/{isbn}",
+    //"https://api.github.com/users/{user}"
+
+    @GetMapping(value = "/users/{user}",
                 produces = {"application/json"})
-    public ResponseEntity<?> listABookGivenISBN(HttpServletRequest request,
+    public ResponseEntity<?> listUser(HttpServletRequest request,
                                                 @PathVariable
-                                                        String isbn)
+                                                        String user)
     {
         logger.trace(request.getMethod()
                             .toUpperCase() + " " + request.getRequestURI() + " accessed");
 
-        String requestURL = "https://openlibrary.org/api/books?bibkeys=" + "ISBN:" + isbn + "&format=json";
+//        String requestURL = "https://api.github.com/users/" + "User:" + user + "&format=json";
+        String requestURL = "https://api.github.com/users/" + user;
 
-        ParameterizedTypeReference<Map<String, APIOpenLibrary>> responseType = new ParameterizedTypeReference<Map<String, APIOpenLibrary>>()
+        System.out.println(requestURL);
+        ParameterizedTypeReference<GithubUser> responseType = new ParameterizedTypeReference<>()
         {
         };
-        ResponseEntity<Map<String, APIOpenLibrary>> responseEntity = restTemplate.exchange(requestURL, HttpMethod.GET, null, responseType);
+        ResponseEntity<GithubUser> responseEntity = restTemplate.exchange(requestURL, HttpMethod.GET, null, responseType);
 
-        Map<String, APIOpenLibrary> ourBooks = responseEntity.getBody();
+        GithubUser userdata = responseEntity.getBody();
 
-        // goodreads
-
-        System.out.println(ourBooks);
-        return new ResponseEntity<>(ourBooks, HttpStatus.OK);
+//        System.out.println(userdata);
+        return new ResponseEntity<>(userdata, HttpStatus.OK);
     }
 }

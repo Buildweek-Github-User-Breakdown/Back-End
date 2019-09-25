@@ -1,6 +1,9 @@
 package com.lambdaschool.githubuser.controllers;
 
 import com.lambdaschool.githubuser.models.User;
+import com.lambdaschool.githubuser.models.UserMinimum;
+import com.lambdaschool.githubuser.models.UserRoles;
+import com.lambdaschool.githubuser.services.RoleService;
 import com.lambdaschool.githubuser.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -28,6 +32,9 @@ public class UserController
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private RoleService roleService;
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping(value = "/users",
@@ -85,28 +92,53 @@ public class UserController
 
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @PostMapping(value = "/user",
-                 consumes = {"application/json"},
-                 produces = {"application/json"})
+    @PostMapping(value = "/createnewuser",
+            consumes = {"application/json"},
+            produces = {"application/json"})
     public ResponseEntity<?> addNewUser(HttpServletRequest request, @Valid
     @RequestBody
-            User newuser) throws URISyntaxException
+            UserMinimum newminuser) throws URISyntaxException
     {
         logger.trace(request.getMethod()
-                            .toUpperCase() + " " + request.getRequestURI() + " accessed");
-
+                .toUpperCase() + " " + request.getRequestURI() + " accessed");
+        User newuser = new User();
+        newuser.setUsername(newminuser.getUsername());
+        newuser.setPassword(newminuser.getPassword());
+        ArrayList<UserRoles> newRoles = new ArrayList<>();
+        newRoles.add(new UserRoles(newuser, roleService.findByName("user")));
+        newuser.setUserroles(newRoles);
         newuser = userService.save(newuser);
-
-        // set the location header for the newly created resource
+        // set the location header for the newly created resource - to another controller!
         HttpHeaders responseHeaders = new HttpHeaders();
-        URI newUserURI = ServletUriComponentsBuilder.fromCurrentRequest()
-                                                    .path("/{userid}")
-                                                    .buildAndExpand(newuser.getUserid())
-                                                    .toUri();
-        responseHeaders.setLocation(newUserURI);
-
+        URI newRestaurantURI = ServletUriComponentsBuilder.fromUriString(request.getServerName() + ":" + request.getLocalPort() + "/users/user/{userId}")
+                .buildAndExpand(newuser.getUserid())
+                .toUri();
+        responseHeaders.setLocation(newRestaurantURI);
         return new ResponseEntity<>(null, responseHeaders, HttpStatus.CREATED);
     }
+
+//    @PostMapping(value = "/user",
+//                 consumes = {"application/json"},
+//                 produces = {"application/json"})
+//    public ResponseEntity<?> addNewUser(HttpServletRequest request, @Valid
+//    @RequestBody
+//            User newuser) throws URISyntaxException
+//    {
+//        logger.trace(request.getMethod()
+//                            .toUpperCase() + " " + request.getRequestURI() + " accessed");
+//
+//        newuser = userService.save(newuser);
+//
+//        // set the location header for the newly created resource
+//        HttpHeaders responseHeaders = new HttpHeaders();
+//        URI newUserURI = ServletUriComponentsBuilder.fromCurrentRequest()
+//                                                    .path("/{userid}")
+//                                                    .buildAndExpand(newuser.getUserid())
+//                                                    .toUri();
+//        responseHeaders.setLocation(newUserURI);
+//
+//        return new ResponseEntity<>(null, responseHeaders, HttpStatus.CREATED);
+//    }
 
 
     @PutMapping(value = "/user/{id}")

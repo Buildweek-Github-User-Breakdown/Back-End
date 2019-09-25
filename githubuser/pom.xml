@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.lambdaschool</groupId>
-    <artifactId>starthere</artifactId>
+    <artifactId>githubuser</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>starthere</name>
-    <description>Demo project for Spring Boot</description>
+    <name>githubuser</name>
+    <description>Github User Project</description>
 
     <properties>
         <java.version>11</java.version>
@@ -136,7 +136,7 @@
 
     <build>
 <!--        <finalName>${project.artifactId}</finalName>-->
-        <finalName>jrmmba-oauthmin</finalName>
+        <finalName>github-user-breakdown</finalName>
 
         <plugins>
             <plugin>
@@ -151,7 +151,7 @@
                 <artifactId>heroku-maven-plugin</artifactId>
                 <version>2.0.10</version>
                 <configuration>
-                    <appName>${project.build.finalName}</appName>
+                    <appName>github-user-breakdown</appName>
                     <includeTarget>false</includeTarget>
                     <includes>
                         <!--   For windows      <include>${project.build.directory}\${project.build.finalName}.jar</include>-->
