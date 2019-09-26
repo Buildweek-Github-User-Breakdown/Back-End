@@ -42,7 +42,7 @@ public class User extends Auditable
             cascade = CascadeType.ALL,
             orphanRemoval = true)
     @JsonIgnoreProperties("user")
-    private List<UserNotes> userNotes = new ArrayList<>();
+    private List<UserNotes> usernotes = new ArrayList<>();
 
     public User()
     {
@@ -113,6 +113,14 @@ public class User extends Auditable
     public void setUseremails(List<Useremail> useremails)
     {
         this.useremails = useremails;
+    }
+
+    public List<UserNotes> getUsernotes() {
+        return usernotes;
+    }
+
+    public void setUsernotes(List<UserNotes> usernotes) {
+        this.usernotes = usernotes;
     }
 
     public List<SimpleGrantedAuthority> getAuthority()

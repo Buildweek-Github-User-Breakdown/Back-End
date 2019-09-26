@@ -1,9 +1,6 @@
 package com.lambdaschool.githubuser;
 
-import com.lambdaschool.githubuser.models.Role;
-import com.lambdaschool.githubuser.models.User;
-import com.lambdaschool.githubuser.models.UserRoles;
-import com.lambdaschool.githubuser.models.Useremail;
+import com.lambdaschool.githubuser.models.*;
 import com.lambdaschool.githubuser.services.RoleService;
 import com.lambdaschool.githubuser.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +42,7 @@ public class SeedData implements CommandLineRunner
           .add(new Useremail(u1, "admin@email.local"));
         u1.getUseremails()
           .add(new Useremail(u1, "admin@mymail.local"));
+        u1.getUsernotes().add(new UserNotes(u1, "test"));
 
         userService.save(u1);
 

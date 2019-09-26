@@ -26,7 +26,7 @@ public class UserNotes extends Auditable
     {
     }
 
-    public UserNotes(String usernotes, User user) {
+    public UserNotes(User user, String usernotes) {
         this.usernotes = usernotes;
         this.user = user;
     }
