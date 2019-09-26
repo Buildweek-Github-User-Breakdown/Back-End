@@ -1,6 +1,5 @@
 package com.lambdaschool.githubuser.controllers;
 
-import com.lambdaschool.githubuser.models.User;
 import com.lambdaschool.githubuser.models.UserNotes;
 import com.lambdaschool.githubuser.services.UserNotesService;
 import org.slf4j.Logger;
@@ -19,85 +18,85 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/usernotes")
+//@RequestMapping("/users")
 public class UserNotesController
 {
     private static final Logger logger = LoggerFactory.getLogger(UserNotesController.class);
 
     @Autowired
-    UserNotesService usernotesService;
+    UserNotesService userNotesService;
 
-    @GetMapping(value = "/usernotes",
-            produces = {"application/json"})
-    public ResponseEntity<?> listAllUserNotes(HttpServletRequest request)
+    @GetMapping(value = "/usersnotes/usernotes",
+                produces = {"application/json"})
+    public ResponseEntity<?> listAllUsernotes(HttpServletRequest request)
     {
         logger.trace(request.getMethod()
-                .toUpperCase() + " " + request.getRequestURI() + " accessed");
+                            .toUpperCase() + " " + request.getRequestURI() + " accessed");
 
-        List<UserNotes> allQuotes = usernotesService.findAll();
+        List<UserNotes> allQuotes = userNotesService.findAll();
         return new ResponseEntity<>(allQuotes, HttpStatus.OK);
     }
 
 
-    @GetMapping(value = "/usernotes/{usernotesId}",
-            produces = {"application/json"})
-    public ResponseEntity<?> getUserEmailById(HttpServletRequest request,
-                                              @PathVariable
-                                                      Long usernotesId)
+    @GetMapping(value = "/usernotes/id/{id}",
+                produces = {"application/json"})
+    public ResponseEntity<?> getUserNotesById(HttpServletRequest request,
+                                      @PathVariable
+                                              Long id)
     {
         logger.trace(request.getMethod()
-                .toUpperCase() + " " + request.getRequestURI() + " accessed");
+                            .toUpperCase() + " " + request.getRequestURI() + " accessed");
 
-        UserNotes un = usernotesService.findUsernotesById(usernotesId);
-        return new ResponseEntity<>(un, HttpStatus.OK);
+        UserNotes ue = userNotesService.findUserNotesById(id);
+        return new ResponseEntity<>(ue, HttpStatus.OK);
     }
 
 
-    @GetMapping(value = "/usernotes/{userName}",
-            produces = {"application/json"})
-    public ResponseEntity<?> findNotesByUserName(HttpServletRequest request,
+    @GetMapping(value = "/usernotes/{username}",
+                produces = {"application/json"})
+    public ResponseEntity<?> findNoteByUserName(HttpServletRequest request,
                                                  @PathVariable
-                                                         String userName)
+                                                         String username)
     {
         logger.trace(request.getMethod()
-                .toUpperCase() + " " + request.getRequestURI() + " accessed");
+                            .toUpperCase() + " " + request.getRequestURI() + " accessed");
 
-        List<UserNotes> theUsernotes = usernotesService.findByUserNotes(userName);
-        return new ResponseEntity<>(theUsernotes, HttpStatus.OK);
+        List<UserNotes> theUserNotes = userNotesService.findByUserName(username);
+        return new ResponseEntity<>(theUserNotes, HttpStatus.OK);
     }
 
 
-    @PostMapping(value = "/usernotes")
+    @PostMapping(value = "/addusernotes")
     public ResponseEntity<?> addNewNote(HttpServletRequest request, @Valid
     @RequestBody
             UserNotes newUserNotes) throws URISyntaxException
     {
         logger.trace(request.getMethod()
-                .toUpperCase() + " " + request.getRequestURI() + " accessed");
+                            .toUpperCase() + " " + request.getRequestURI() + " accessed");
 
-        newUserNotes = usernotesService.save(newUserNotes);
+        newUserNotes = userNotesService.save(newUserNotes);
 
         // set the location header for the newly created resource
         HttpHeaders responseHeaders = new HttpHeaders();
         URI newUseremailURI = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{usernotesId}")
-                .buildAndExpand(newUserNotes.getUsernotesid())
-                .toUri();
+                                                     .path("/{usernotesId}")
+                                                     .buildAndExpand(newUserNotes.getUsernotesid())
+                                                     .toUri();
         responseHeaders.setLocation(newUseremailURI);
 
         return new ResponseEntity<>(null, responseHeaders, HttpStatus.CREATED);
     }
 
 
-    @DeleteMapping("/usernotes/{usernotesid}")
+    @DeleteMapping("/usernotes/{id}")
     public ResponseEntity<?> deleteNoteById(HttpServletRequest request,
                                              @PathVariable
-                                                     long usernotesid)
+                                                     long id)
     {
         logger.trace(request.getMethod()
-                .toUpperCase() + " " + request.getRequestURI() + " accessed");
+                            .toUpperCase() + " " + request.getRequestURI() + " accessed");
 
-        usernotesService.delete(usernotesid);
+        userNotesService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

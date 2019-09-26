@@ -1,12 +1,16 @@
 package com.lambdaschool.githubuser.services;
 
+import com.lambdaschool.githubuser.exceptions.ResourceFoundException;
 import com.lambdaschool.githubuser.exceptions.ResourceNotFoundException;
+import com.lambdaschool.githubuser.models.User;
 import com.lambdaschool.githubuser.models.UserNotes;
 import com.lambdaschool.githubuser.repository.UserNotesRepository;
+import com.lambdaschool.githubuser.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,53 +19,56 @@ import java.util.List;
 public class UserNotesServiceImpl implements UserNotesService
 {
     @Autowired
-    private UserNotesRepository usernotesrepos;
+    private UserNotesRepository usernotesrepoistory;
+
+    @Autowired
+    private UserRepository userrepos;
 
     @Override
     public List<UserNotes> findAll()
     {
         List<UserNotes> list = new ArrayList<>();
-        usernotesrepos.findAll()
-                .iterator()
-                .forEachRemaining(list::add);
+        usernotesrepoistory.findAll()
+                      .iterator()
+                      .forEachRemaining(list::add);
         return list;
     }
 
     @Override
-    public UserNotes findUsernotesById(long id)
+    public UserNotes findUserNotesById(long id)
     {
-        return usernotesrepos.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " Not Found!"));
+        return usernotesrepoistory.findById(id)
+                             .orElseThrow(() -> new ResourceNotFoundException("Useremail with id " + id + " Not Found!"));
     }
 
     @Override
-    public List<UserNotes> findByUserNotes(String username)
+    public List<UserNotes> findByUserName(String username)
     {
-        return usernotesrepos.findAllByUser_Username(username);
+        return usernotesrepoistory.findAllByUser_Username(username);
     }
 
     @Override
     public void delete(long id)
     {
-        if (usernotesrepos.findById(id)
-                .isPresent())
+        if (usernotesrepoistory.findById(id)
+                          .isPresent())
         {
             Authentication authentication = SecurityContextHolder.getContext()
-                    .getAuthentication();
-            if (usernotesrepos.findById(id)
-                    .get()
-                    .getUser()
-                    .getUsername()
-                    .equalsIgnoreCase(authentication.getName()))
+                                                                 .getAuthentication();
+            if (usernotesrepoistory.findById(id)
+                              .get()
+                              .getUser()
+                              .getUsername()
+                              .equalsIgnoreCase(authentication.getName()))
             {
-                usernotesrepos.deleteById(id);
+                usernotesrepoistory.deleteById(id);
             } else
             {
                 throw new ResourceNotFoundException(authentication.getName() + " not authorized to make change");
             }
         } else
         {
-            throw new ResourceNotFoundException("User with id " + id + " Not Found!");
+            throw new ResourceNotFoundException("Useremail with id " + id + " Not Found!");
         }
     }
 
@@ -69,14 +76,49 @@ public class UserNotesServiceImpl implements UserNotesService
     public UserNotes save(UserNotes userNotes)
     {
         Authentication authentication = SecurityContextHolder.getContext()
-                .getAuthentication();
+                                                             .getAuthentication();
 
         if (userNotes.getUser()
-                .getUsername()
-                .equalsIgnoreCase(authentication.getName()))
+                     .getUsername()
+                     .equalsIgnoreCase(authentication.getName()))
         {
-            return usernotesrepos.save(userNotes);
+            return usernotesrepoistory.save(userNotes);
+        } else
+        {
+            throw new ResourceNotFoundException((authentication.getName() + "not authorized to make change"));
         }
-        return usernotesrepos.save(userNotes);
     }
+
+//    @Transactional
+//    @Override
+//    public UserNotes update(UserNotes userNotes, String name)
+//    {
+//        Authentication authentication = SecurityContextHolder.getContext()
+//                .getAuthentication();
+////        UserNotes currentUser = usernotesrepoistory.findAllByUser_Username(authentication.getName());
+//
+//        if (id == currentUser.getUserid())
+//        {
+////            if (user.getUsername() != null)
+////            {
+////                currentUser.setUsernotes(userNotes.getUsernotes());
+////            }
+//
+//
+//            if (userNotes.getUsernotes(name))
+//
+//            {
+//                for (UserNotes ue : user.getUserNotes())
+//                {
+//                    currentUser.getUserNotes()
+//                            .add(new UserNotes(currentUser, ue.getUsernotes()));
+//                }
+//            }
+//
+//            return userrepos.save(currentUser);
+//        } else
+//        {
+//            throw new ResourceNotFoundException(id + " Not current user");
+//        }
+//    }
 }
