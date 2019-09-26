@@ -10,7 +10,7 @@ public interface UserNotesService {
 
     UserNotes findUsernotesById(long id);
 
-    List<UserNotes> findByUserName(String username);
+    List<UserNotes> findByUserNotes(String username);
 
     void delete(long id);
 
