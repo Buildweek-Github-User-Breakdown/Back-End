@@ -77,6 +77,6 @@ public class UserNotesServiceImpl implements UserNotesService
         {
             return usernotesrepos.save(userNotes);
         }
-        return usernotesrepos.save(userNotes); 
+        return usernotesrepos.save(userNotes);
     }
 }
