@@ -1,7 +1,7 @@
 package com.lambdaschool.githubuser.controllers;
 
-import com.lambdaschool.githubuser.models.Useremail;
-import com.lambdaschool.githubuser.services.UseremailService;
+import com.lambdaschool.githubuser.models.UserNotes;
+import com.lambdaschool.githubuser.services.UserNotesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,69 +18,69 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/useremails")
-public class UseremailController
+//@RequestMapping("/users")
+public class UserNotesController
 {
-    private static final Logger logger = LoggerFactory.getLogger(UseremailController.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserNotesController.class);
 
     @Autowired
-    UseremailService useremailService;
+    UserNotesService userNotesService;
 
-    @GetMapping(value = "/useremails",
+    @GetMapping(value = "/usersnotes/usernotes",
                 produces = {"application/json"})
-    public ResponseEntity<?> listAllUseremails(HttpServletRequest request)
+    public ResponseEntity<?> listAllUsernotes(HttpServletRequest request)
     {
         logger.trace(request.getMethod()
                             .toUpperCase() + " " + request.getRequestURI() + " accessed");
 
-        List<Useremail> allQuotes = useremailService.findAll();
+        List<UserNotes> allQuotes = userNotesService.findAll();
         return new ResponseEntity<>(allQuotes, HttpStatus.OK);
     }
 
 
-    @GetMapping(value = "/useremail/{useremailId}",
+    @GetMapping(value = "/usernotes/id/{id}",
                 produces = {"application/json"})
-    public ResponseEntity<?> getUserEmailById(HttpServletRequest request,
+    public ResponseEntity<?> getUserNotesById(HttpServletRequest request,
                                       @PathVariable
-                                              Long useremailId)
+                                              Long id)
     {
         logger.trace(request.getMethod()
                             .toUpperCase() + " " + request.getRequestURI() + " accessed");
 
-        Useremail ue = useremailService.findUseremailById(useremailId);
+        UserNotes ue = userNotesService.findUserNotesById(id);
         return new ResponseEntity<>(ue, HttpStatus.OK);
     }
 
 
-    @GetMapping(value = "/username/{userName}",
+    @GetMapping(value = "/usernotes/{username}",
                 produces = {"application/json"})
-    public ResponseEntity<?> findQuoteByUserName(HttpServletRequest request,
+    public ResponseEntity<?> findNoteByUserName(HttpServletRequest request,
                                                  @PathVariable
-                                                         String userName)
+                                                         String username)
     {
         logger.trace(request.getMethod()
                             .toUpperCase() + " " + request.getRequestURI() + " accessed");
 
-        List<Useremail> theUseremails = useremailService.findByUserName(userName);
-        return new ResponseEntity<>(theUseremails, HttpStatus.OK);
+        List<UserNotes> theUserNotes = userNotesService.findByUserName(username);
+        return new ResponseEntity<>(theUserNotes, HttpStatus.OK);
     }
 
 
-    @PostMapping(value = "/useremail")
-    public ResponseEntity<?> addNewQuote(HttpServletRequest request, @Valid
+    @PostMapping(value = "/addusernotes")
+    public ResponseEntity<?> addNewNote(HttpServletRequest request, @Valid
     @RequestBody
-            Useremail newUseremail) throws URISyntaxException
+            UserNotes newUserNotes) throws URISyntaxException
     {
         logger.trace(request.getMethod()
                             .toUpperCase() + " " + request.getRequestURI() + " accessed");
 
-        newUseremail = useremailService.save(newUseremail, request.isUserInRole("ADMIN"));
+        newUserNotes = userNotesService.save(newUserNotes);
 
         // set the location header for the newly created resource
         HttpHeaders responseHeaders = new HttpHeaders();
         URI newUseremailURI = ServletUriComponentsBuilder.fromCurrentRequest()
-                                                     .path("/{useremailid}")
-                                                     .buildAndExpand(newUseremail.getUseremailid())
+                                                     .path("/{usernotesId}")
+                                                     .buildAndExpand(newUserNotes.getUsernotesid())
                                                      .toUri();
         responseHeaders.setLocation(newUseremailURI);
 
@@ -88,15 +88,15 @@ public class UseremailController
     }
 
 
-    @DeleteMapping("/useremail/{useremailid}")
-    public ResponseEntity<?> deleteQuoteById(HttpServletRequest request,
+    @DeleteMapping("/usernotes/{id}")
+    public ResponseEntity<?> deleteNoteById(HttpServletRequest request,
                                              @PathVariable
-                                                     long useremailid)
+                                                     long id)
     {
         logger.trace(request.getMethod()
                             .toUpperCase() + " " + request.getRequestURI() + " accessed");
 
-        useremailService.delete(useremailid, request.isUserInRole("ADMIN"));
+        userNotesService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

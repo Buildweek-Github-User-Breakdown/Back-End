@@ -5,7 +5,7 @@ import com.lambdaschool.githubuser.exceptions.ResourceNotFoundException;
 import com.lambdaschool.githubuser.models.Role;
 import com.lambdaschool.githubuser.models.User;
 import com.lambdaschool.githubuser.models.UserRoles;
-import com.lambdaschool.githubuser.models.Useremail;
+import com.lambdaschool.githubuser.models.UserNotes;
 import com.lambdaschool.githubuser.repository.RoleRepository;
 import com.lambdaschool.githubuser.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,10 +103,10 @@ public class UserServiceImpl implements UserDetailsService, UserService
         }
         newUser.setUserroles(newRoles);
 
-        for (Useremail ue : user.getUseremails())
+        for (UserNotes ue : user.getUserNotes())
         {
-            newUser.getUseremails()
-                   .add(new Useremail(newUser, ue.getUseremail()));
+            newUser.getUserNotes()
+                   .add(new UserNotes(newUser, ue.getUsernotes()));
         }
 
         return userrepos.save(newUser);
@@ -139,13 +139,13 @@ public class UserServiceImpl implements UserDetailsService, UserService
                 throw new ResourceFoundException("User Roles are not updated through User");
             }
 
-            if (user.getUseremails()
+            if (user.getUserNotes()
                     .size() > 0)
             {
-                for (Useremail ue : user.getUseremails())
+                for (UserNotes ue : user.getUserNotes())
                 {
-                    currentUser.getUseremails()
-                               .add(new Useremail(currentUser, ue.getUseremail()));
+                    currentUser.getUserNotes()
+                               .add(new UserNotes(currentUser, ue.getUsernotes()));
                 }
             }
 
